@@ -56,7 +56,7 @@ function displayPicker(){
     let container = $("#pickerContainer")[0];
     container.innerHTML = "";
     for(let i = 0; i < PICK_SLOTS; i ++){
-        displayEmptyCharacter(container);
+        displayEmptyTeamCharacter(container);
     }
 }
 
@@ -80,18 +80,21 @@ function randomize(){
 
     for(let i = 0; i < PICK_SLOTS; i ++){
         if(i >= filteredCharacters.length){
-            displayEmptyCharacter(container);
+            displayEmptyTeamCharacter(container);
         }else{
             displayAbyssCharacter(container, filteredCharacters[i].id); 
         }
     }
 
+    enableContainerClicks("pickerContainer");
+    disableContainerClicks("characterContainer");
     disableButton("disableButton");
     disableButton("enableButton");
 }
 
 function setCurrentPick(element){
     selectedElement = element;
+    enableContainerClicks("teamContainer");
 }
 
 function shuffleArray(array) {
@@ -108,6 +111,8 @@ function swapNodes(a, b) {
     aparent.insertBefore(b, asibling);
 
     //please do this more elegantly 
+    disableContainerClicks("pickerContainer");
+    disableContainerClicks("teamContainer");
     teamCharacters.push(characters[b.id]);
     b.style["pointer-events"] = "none";
     selectedElement = null;
@@ -118,33 +123,43 @@ function clearTeam(){
     for(let i = 0; i < teamCharacters.length; i++){
         teamCharacters[i].enabled = true;
     }
+    teamCharacters = [];
 }
 
 
 function enableAll(){
     for(let i = 0; i < characters.length; i++){
         characters[i].enabled = true;
-        $("#"+i).removeClass('disabledCard');
-        $("#"+i).addClass('enabledCard');
+        addClassRemoveClass(i, 'enabledCard', 'disabledCard');
     }
 }
 
 function disableAll(){
     for(let i = 0; i < characters.length; i++){
         characters[i].enabled = false;
-        $("#"+i).removeClass('enabledCard');
-        $("#"+i).addClass('disabledCard');
+        addClassRemoveClass(i, 'disabledCard', 'enabledCard');
     }
 }
 
 function disableButton(elementId){
-    $("#"+elementId).removeClass('enabled');
-    $("#"+elementId).addClass('disabled');
+    addClassRemoveClass(elementId, 'disabled', 'enabled');
 }
 
 function enableButton(elementId){
-    $("#"+elementId).removeClass('disabled');
-    $("#"+elementId).addClass('enabled');
+    addClassRemoveClass(elementId, 'enabled', 'disabled');
+}
+
+function enableContainerClicks(elementId){
+    addClassRemoveClass(elementId, "pointersEnabled", "pointersDisabled");
+}
+
+function disableContainerClicks(elementId){
+    addClassRemoveClass(elementId, "pointersDisabled", "pointersEnabled");
+}
+
+function addClassRemoveClass(elementId, addedClass, removedClass){
+    $("#"+elementId).removeClass(removedClass);
+    $("#"+elementId).addClass(addedClass);
 }
 
 function displayCharacter(container, id){
@@ -174,6 +189,18 @@ function displayAbyssCharacter(container, id){
 function displayEmptyCharacter(container){
     container.innerHTML += `
         <div class="card m-2 rounded-4" onclick="swapNodes(this, selectedElement)">
+            <img src="" class="element-icon">
+            <img src="" class="card-img-top rounded-4"">
+            <div class="">
+                <div class="card-title text-center fw-bold"></div>
+            </div>
+        </div>
+        `;
+}
+
+function displayEmptyTeamCharacter(container){
+    container.innerHTML += `
+        <div class="card m-2 rounded-4">
             <img src="" class="element-icon">
             <img src="" class="card-img-top rounded-4"">
             <div class="">
@@ -217,8 +244,13 @@ function clearState(){
     displayTeams();
     displayPicker();
     clearTeam();
+    
     enableButton("disableButton");
     enableButton("enableButton");
+
+    enableContainerClicks("characterContainer");
+    disableContainerClicks("teamContainer");
+    disableContainerClicks("pickerContainer");
 }
 
 async function initPage(){

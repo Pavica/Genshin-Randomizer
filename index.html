@@ -50,6 +50,15 @@
       width: 10rem;
     }
 
+    .pointersEnabled{
+      pointer-events: all;
+    }
+
+    .pointersDisabled{
+      pointer-events: none;
+      opacity: 50%;
+    }
+
     @media only screen and (max-width: 600px) {
       .card{
         border: none;
@@ -78,7 +87,7 @@
     </div>
   </div>
 
-  <div id="teamContainer" class="d-flex flex-wrap justify-content-center"></div>
+  <div id="teamContainer" class="d-flex flex-wrap justify-content-center pointersDisabled"></div>
    
   <h1 class="text-center">Picks</h1>
 
@@ -90,7 +99,7 @@
     </div>
   </div>
 
-  <div id="pickerContainer" class="d-flex flex-wrap justify-content-center"></div>
+  <div id="pickerContainer" class="d-flex flex-wrap justify-content-center pointersDisabled"></div>
     
   <h1 class="text-center">Available Characters</h1>
 
