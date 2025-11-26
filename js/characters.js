@@ -73,7 +73,7 @@ function displayTeams(){
 
 function randomize(){
     let container = $("#pickerContainer")[0];
-    container.innerHTML ="";
+    container.innerHTML = "";
 
     filteredCharacters = characters.filter((character) => character.enabled);
     shuffleArray(filteredCharacters);
@@ -90,6 +90,14 @@ function randomize(){
     disableContainerClicks("characterContainer");
     disableButton("disableButton");
     disableButton("enableButton");
+}
+
+function checkIfFinished(){
+     if(characters.filter((character) => character.enabled) <= 0 || teamCharacters.length == TEAM_SLOTS){
+        disableButton("randomizeButton");
+        enableContainerClicks("teamContainer");
+        disableContainerClicks("pickerContainer");
+    }
 }
 
 function setCurrentPick(element){
@@ -117,6 +125,8 @@ function swapNodes(a, b) {
     b.style["pointer-events"] = "none";
     selectedElement = null;
     characters[b.id].enabled = false;
+
+    checkIfFinished();
 }
 
 function clearTeam(){
@@ -176,7 +186,7 @@ function displayCharacter(container, id){
 
 function displayAbyssCharacter(container, id){
     container.innerHTML += `
-        <div class="card m-2 rounded-4 enabledCard"onclick="setCurrentPick(this)" id ="${id}">
+        <div class="card m-2 rounded-4 enabledCard" onclick="setCurrentPick(this)" id ="${id}">
             <img src="https://api.hakush.in/gi/UI/${characters[id].element}.webp" class="element-icon">
             <img src="https://api.hakush.in/gi/UI/${characters[id].icon}.webp" class="card-img-top rounded-4"  style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
             <div class="">
@@ -190,7 +200,7 @@ function displayEmptyCharacter(container){
     container.innerHTML += `
         <div class="card m-2 rounded-4" onclick="swapNodes(this, selectedElement)">
             <img src="" class="element-icon">
-            <img src="" class="card-img-top rounded-4"">
+            <img src="" class="card-img-top rounded-4">
             <div class="">
                 <div class="card-title text-center fw-bold"></div>
             </div>
@@ -202,7 +212,7 @@ function displayEmptyTeamCharacter(container){
     container.innerHTML += `
         <div class="card m-2 rounded-4">
             <img src="" class="element-icon">
-            <img src="" class="card-img-top rounded-4"">
+            <img src="" class="card-img-top rounded-4">
             <div class="">
                 <div class="card-title text-center fw-bold"></div>
             </div>
@@ -232,11 +242,9 @@ function deleteSelf(element){
 function deactivate(element){
     characters[element.id].enabled = !characters[element.id].enabled;
     if(characters[element.id].enabled){
-        $(element).removeClass('disabledCard');
-        $(element).addClass('enabledCard');
+        addClassRemoveClass(element.id,'enabledCard','disabledCard');
     }else{
-        $(element).removeClass('enabledCard');
-        $(element).addClass('disabledCard');
+        addClassRemoveClass(element.id,'disabledCard','enabledCard');
     }
 }
 
@@ -247,6 +255,7 @@ function clearState(){
     
     enableButton("disableButton");
     enableButton("enableButton");
+    enableButton("randomizeButton");
 
     enableContainerClicks("characterContainer");
     disableContainerClicks("teamContainer");
