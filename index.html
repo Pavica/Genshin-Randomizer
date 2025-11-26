@@ -14,6 +14,8 @@
   <style>
     .element-icon{
       position:absolute;
+      margin-left:2px;
+      margin-top:2px;
       width: 2.5rem;
     }
 
@@ -44,8 +46,8 @@
       font-weight: bold;
       margin-top: 2rem;
       margin-bottom: 1rem;
-      
     }
+    
     button{
       width: 10rem;
     }
@@ -61,6 +63,15 @@
 
     img{
       scale: 1.01;
+    }
+
+    hr{
+      color: white;
+      background-color: white;
+      height: 3px;
+      width: 35rem;
+      margin-left:auto;
+      margin-right: auto;
     }
 
     @media only screen and (max-width: 600px) {
@@ -80,8 +91,10 @@
 
   </style>
   <body onload="initPage()" style="background-color: #585CA7">
-
-    <h1 class="text-center">Teams</h1>
+ 
+  <h1 class="text-center">Teams</h1>
+  
+  <hr>
 
   <div class="container">
     <div class="row">
@@ -92,10 +105,12 @@
   </div>
 
   <div id="teamContainer" class="d-flex flex-wrap justify-content-center pointersDisabled"></div>
-   
+
   <h1 class="text-center">Picks</h1>
 
- <div class="container">
+  <hr>
+
+  <div class="container">
     <div class="row">
       <div class="col text-center">
         <button type="button" class="btn btn-warning fw-bold" id="randomizeButton" onclick="randomize()">Randomize</button>
@@ -104,8 +119,10 @@
   </div>
 
   <div id="pickerContainer" class="d-flex flex-wrap justify-content-center pointersDisabled"></div>
-    
+
   <h1 class="text-center">Available Characters</h1>
+
+  <hr>
 
  <div class="container">
     <div class="row">
@@ -118,7 +135,7 @@
     </div>
   </div>
 
-    <div id="characterContainer" class="d-flex flex-wrap justify-content-center">
-    </div>
+  <div id="characterContainer" class="d-flex flex-wrap justify-content-center"></div>
+
   </body>
 </html>
