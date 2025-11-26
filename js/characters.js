@@ -136,7 +136,6 @@ function clearTeam(){
     teamCharacters = [];
 }
 
-
 function enableAll(){
     for(let i = 0; i < characters.length; i++){
         characters[i].enabled = true;
@@ -175,8 +174,8 @@ function addClassRemoveClass(elementId, addedClass, removedClass){
 function displayCharacter(container, id){
     container.innerHTML += `
         <div class="card m-2 rounded-4" onclick="deactivate(this)" id ="${i}">
-            <img src="https://api.hakush.in/gi/UI/${characters[id].element}.webp" class="element-icon">
             <img src="https://api.hakush.in/gi/UI/${characters[id].icon}.webp" class="card-img-top rounded-4"  style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
+            <img src="https://api.hakush.in/gi/UI/${characters[id].element}.webp" class="element-icon">
             <div class="">
                 <div class="card-title text-center fw-bold">${characters[id].name}</div>
             </div>
@@ -187,8 +186,8 @@ function displayCharacter(container, id){
 function displayAbyssCharacter(container, id){
     container.innerHTML += `
         <div class="card m-2 rounded-4 enabledCard" onclick="setCurrentPick(this)" id ="${id}">
-            <img src="https://api.hakush.in/gi/UI/${characters[id].element}.webp" class="element-icon">
             <img src="https://api.hakush.in/gi/UI/${characters[id].icon}.webp" class="card-img-top rounded-4"  style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
+            <img src="https://api.hakush.in/gi/UI/${characters[id].element}.webp" class="element-icon">
             <div class="">
                 <div class="card-title text-center fw-bold">${characters[id].name}</div>
             </div>
@@ -199,8 +198,8 @@ function displayAbyssCharacter(container, id){
 function displayEmptyCharacter(container){
     container.innerHTML += `
         <div class="card m-2 rounded-4" onclick="swapNodes(this, selectedElement)">
-            <img src="" class="element-icon">
             <img src="" class="card-img-top rounded-4">
+            <img src="" class="element-icon">
             <div class="">
                 <div class="card-title text-center fw-bold"></div>
             </div>
@@ -211,8 +210,8 @@ function displayEmptyCharacter(container){
 function displayEmptyTeamCharacter(container){
     container.innerHTML += `
         <div class="card m-2 rounded-4">
-            <img src="" class="element-icon">
             <img src="" class="card-img-top rounded-4">
+            <img src="" class="element-icon">
             <div class="">
                 <div class="card-title text-center fw-bold"></div>
             </div>
