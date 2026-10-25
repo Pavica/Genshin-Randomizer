@@ -29,7 +29,7 @@ function loadCookies(){
     $("#tooltip")[0].innerHTML = saveSettings[1];
 
     setRollCount(saveSettings[2]);
-    $("rollCountSelect").val(saveSettings[2]+"");
+    $("#rollCountSelect").val(saveSettings[2]+"");
 }
 
 function updateCookies(){
