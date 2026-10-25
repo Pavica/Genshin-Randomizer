@@ -1,4 +1,7 @@
-addEventListener("beforeunload", (event) => {updateCookies();})
+addEventListener("beforeunload", (event) => {
+    clearTeam();
+    updateCookies();
+})
 
 function loadCookies(){
     if(getCookie("save") == ""){
