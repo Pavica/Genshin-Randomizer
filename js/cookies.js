@@ -16,7 +16,7 @@ function loadCookies(){
     }
   
     if(getCookie("saveSettings") == ""){
-        setCookie("save", "8|3|1",400);
+        setCookie("saveSettings", "8|3|1",400);
     }else{
       
     }
