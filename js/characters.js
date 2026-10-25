@@ -1,8 +1,8 @@
-const API_URL = "https://api.hakush.in/gi/"
+const API_URL = "https://api.lunaris.moe/data/7.1.53"
 const PICK_SLOTS = 3;
 const TEAM_SLOTS = 8;
 let characters = [];
-let teamCharacters = []
+let teamCharacters = [];
 
 let selectedElement;
 
@@ -18,7 +18,7 @@ async function fetchCharacter(id){
 }
 
 async function fetchAllCharacters(){
-    let response = await fetch(`${API_URL}data/character.json`);
+    let response = await fetch(`${API_URL}/charlist.json`);
 
     if(!response.ok){
         alert("Server error: " + response.status);
@@ -33,8 +33,11 @@ async function obtainCharacters(){
     let charactersRaw = await fetchAllCharacters();
     let id = 0;
     Object.values(charactersRaw).forEach(character => {
-        if(character.EN != "Manekin" && character.EN != "Manekina" && character.EN != "Traveler"){
-            characters.push(new Character(id++, character.EN, character.element, character.rank, character.icon));
+        if(character.enName == "Manekin" || character.enName == "Manekina" ||
+            character.enName == "Traveler"  && (character.CardImg != "UI_Gacha_AvatarIcon_PlayerGirl" || character.element != "Cryo")){
+
+        }else{
+            characters.push(new Character(id++, character.enName, character.element.toLowerCase(), character.qualityType, "UI"+character.CardImg.slice(8,character.CardImg.length)));
         }
     });
 }
@@ -75,7 +78,7 @@ function randomize(){
     let container = $("#pickerContainer")[0];
     container.innerHTML = "";
 
-    filteredCharacters = characters.filter((character) => character.enabled);
+    let filteredCharacters = characters.filter((character) => character.enabled);
     shuffleArray(filteredCharacters);
 
     for(let i = 0; i < PICK_SLOTS; i ++){
@@ -134,6 +137,7 @@ function clearTeam(){
         teamCharacters[i].enabled = true;
     }
     teamCharacters = [];
+    updateCookies();
 }
 
 function enableAll(){
@@ -174,8 +178,8 @@ function addClassRemoveClass(elementId, addedClass, removedClass){
 function displayCharacter(container, id){
     container.innerHTML += `
         <div class="card m-2 rounded-4" onclick="deactivate(this)" id ="${i}">
-            <img src="https://api.hakush.in/gi/UI/${characters[id].icon}.webp" class="card-img-top rounded-4"  style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
-            <img src="https://api.hakush.in/gi/UI/${characters[id].element}.webp" class="element-icon">
+            <img src="https://api.lunaris.moe/data/assets/avataricon/${characters[id].icon}.webp" class="card-img-top rounded-4"  style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
+            <img src="images/${characters[id].element}.png" class="element-icon">
             <div class="my-auto">
                 <div class="card-title text-center fw-bold">${characters[id].name}</div>
             </div>
@@ -186,8 +190,8 @@ function displayCharacter(container, id){
 function displayAbyssCharacter(container, id){
     container.innerHTML += `
         <div class="card m-2 rounded-4 enabledCard" onclick="setCurrentPick(this)" id ="${id}">
-            <img src="https://api.hakush.in/gi/UI/${characters[id].icon}.webp" class="card-img-top rounded-4"  style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
-            <img src="https://api.hakush.in/gi/UI/${characters[id].element}.webp" class="element-icon">
+            <img src="https://api.lunaris.moe/data/assets/avataricon/${characters[id].icon}.webp" class="card-img-top rounded-4"  style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
+            <img src="images/${characters[id].element}.png" class="element-icon">
             <div class="my-auto">
                 <div class="card-title text-center fw-bold">${characters[id].name}</div>
             </div>
@@ -222,13 +226,13 @@ function displayEmptyTeamCharacter(container){
 function getColorFromElement(element){
     console.log(element);
     switch(element){
-        case "Hydro": return "#08e2ff";
-        case "Pyro": return "#ef7a35";
-        case "Electro": return "#b08fc2";
-        case "Anemo": return "#75c2aa";
-        case "Cryo": return "#a0d7e4";
-        case "Dendro": return "#b1e929";
-        case "Geo": return "#f2d669";
+        case "hydro": return "#08e2ff";
+        case "pyro": return "#ef7a35";
+        case "electro": return "#b08fc2";
+        case "anemo": return "#75c2aa";
+        case "cryo": return "#a0d7e4";
+        case "dendro": return "#b1e929";
+        case "geo": return "#f2d669";
     }
 }
 
@@ -245,6 +249,7 @@ function deactivate(element){
     }else{
         addClassRemoveClass(element.id,'disabledCard','enabledCard');
     }
+    updateCookies();
 }
 
 function clearState(){
@@ -263,6 +268,7 @@ function clearState(){
 
 async function initPage(){
     await obtainCharacters();
-     displayCharacters();
+    displayCharacters();
     clearState();
+    loadCookies();
 }
