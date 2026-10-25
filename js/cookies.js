@@ -7,13 +7,29 @@ function loadCookies(){
     if(getCookie("save") == ""){
         setCookie("save","",400);
     }else{
-        
+      
     }
     let save = getCookie("save").split("|");
     
-    for(let i = 0; i < save.length-1; i++){
+      for(let i = 0; i < save.length-1; i++){
         deactivate(save[i]);
     }
+  
+    if(getCookie("saveSettings") == ""){
+        setCookie("save", "8|3|1",400);
+    }else{
+      
+    }
+    let saveSettings = getCookie("saveSettings").split("|");
+    setTeamSlots(saveSettings[0]);
+    $("#teamSelect").val(saveSettings[0]+"");
+
+    setPickSlots(saveSettings[1]);
+    $("#pickRange").val(saveSettings[1]+"");
+    $("#tooltip")[0].innerHTML = saveSettings[1];
+
+    setRollCount(saveSettings[2]);
+    $("rollCountSelect").val(saveSettings[2]+"");
 }
 
 function updateCookies(){
@@ -21,6 +37,7 @@ function updateCookies(){
     characters.filter((character) => !character.enabled).forEach(
         disabledCharacter => {save += disabledCharacter.id +"|"});
 
+    setCookie("saveSettings", teamSlots + "|" + pickSlots + "|" + rollCount, 400);
     setCookie("save",save.toString(),400);
 }
 

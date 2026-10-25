@@ -1,10 +1,36 @@
 const API_URL = "https://api.lunaris.moe/data/7.1.53"
-const PICK_SLOTS = 3;
-const TEAM_SLOTS = 8;
+let pickSlots = 3;
+let teamSlots = 8;
+let rollCount = 1;
+let rollCounter = 0;
+
 let characters = [];
 let teamCharacters = [];
 
 let selectedElement;
+
+function setRollCount(amount){
+    rollCount = amount;
+    updateRollCounter();
+}
+
+function setPickSlots(amount){
+    pickSlots = amount;
+    displayPicker();
+}
+
+function setTeamSlots(amount){
+    teamSlots = amount;
+    displayTeams();
+}
+
+
+document.addEventListener('hide.bs.modal', function (event) {
+    // Remove the focus from the active element on the modal. Otherwise this could cause issues for assistive tech users
+    if (document.activeElement) {
+    document.activeElement.blur();
+    }
+});
 
 async function fetchCharacter(id){
     let response = await fetch(`${API_URL}data/en/character/10000${id}.json`);
@@ -37,7 +63,8 @@ async function obtainCharacters(){
             character.enName == "Traveler"  && (character.CardImg != "UI_Gacha_AvatarIcon_PlayerGirl" || character.element != "Cryo")){
 
         }else{
-            characters.push(new Character(id++, character.enName, character.element.toLowerCase(), character.qualityType, "UI"+character.CardImg.slice(8,character.CardImg.length)));
+            characters.push(new Character(id++, character.enName, character.element.toLowerCase(), character.qualityType,
+             "UI"+character.CardImg.slice(8,character.CardImg.length)));
         }
     });
 }
@@ -58,7 +85,7 @@ function displayOneCharacter(elementId, characterId){
 function displayPicker(){
     let container = $("#pickerContainer")[0];
     container.innerHTML = "";
-    for(let i = 0; i < PICK_SLOTS; i ++){
+    for(let i = 0; i < pickSlots; i ++){
         displayEmptyTeamCharacter(container);
     }
 }
@@ -66,7 +93,7 @@ function displayPicker(){
 function displayTeams(){
     let container = $("#teamContainer")[0];
     container.innerHTML = "";
-    for(let i = 0; i < TEAM_SLOTS; i ++){
+    for(let i = 0; i < teamSlots; i ++){
         if(i % 4 == 0){
             container.innerHTML+=`<span class="break"></span>`;
         }
@@ -74,14 +101,24 @@ function displayTeams(){
     }
 }
 
-function randomize(){
+function updateRollCounter(){
+    if(rollCount != -1){
+        $("#randomRollCount")[0].innerHTML = rollCount-rollCounter;
+    }else{
+        $("#randomRollCount")[0].innerHTML = "∞";
+    }
+}
+
+function randomRoll(){
+    rollCounter++;
+    updateRollCounter();
     let container = $("#pickerContainer")[0];
     container.innerHTML = "";
 
     let filteredCharacters = characters.filter((character) => character.enabled);
     shuffleArray(filteredCharacters);
 
-    for(let i = 0; i < PICK_SLOTS; i ++){
+    for(let i = 0; i < pickSlots; i ++){
         if(i >= filteredCharacters.length){
             displayEmptyTeamCharacter(container);
         }else{
@@ -91,15 +128,24 @@ function randomize(){
 
     enableContainerClicks("pickerContainer");
     disableContainerClicks("characterContainer");
+    disableButton("settingsButton");
     disableButton("disableButton");
     disableButton("enableButton");
+    if(rollCounter >= rollCount && rollCount !=-1){
+        disableButton("randomRollButton");
+    }
 }
 
 function checkIfFinished(){
-     if(characters.filter((character) => character.enabled) <= 0 || teamCharacters.length == TEAM_SLOTS){
-        disableButton("randomizeButton");
+    rollCounter = 0;
+    updateRollCounter();
+
+     if(characters.filter((character) => character.enabled) <= 0 || teamCharacters.length == teamSlots){
+        disableButton("randomRollButton");
         enableContainerClicks("teamContainer");
         disableContainerClicks("pickerContainer");
+    }else{
+        enableButton("randomRollButton");
     }
 }
 
@@ -177,7 +223,8 @@ function addClassRemoveClass(elementId, addedClass, removedClass){
 function displayCharacter(container, id){
     container.innerHTML += `
         <div class="card m-2 rounded-4" onclick="deactivate(this.id)" id ="${i}">
-            <img src="https://api.lunaris.moe/data/assets/avataricon/${characters[id].icon}.webp" class="card-img-top rounded-4"  style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
+            <img src="https://api.lunaris.moe/data/assets/avataricon/${characters[id].icon}.webp" class="card-img-top rounded-4"  
+            style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
             <img src="images/${characters[id].element}.png" class="element-icon">
             <div class="my-auto">
                 <div class="card-title text-center fw-bold">${characters[id].name}</div>
@@ -189,7 +236,8 @@ function displayCharacter(container, id){
 function displayAbyssCharacter(container, id){
     container.innerHTML += `
         <div class="card m-2 rounded-4 enabledCard" onclick="setCurrentPick(this)" id ="${id}">
-            <img src="https://api.lunaris.moe/data/assets/avataricon/${characters[id].icon}.webp" class="card-img-top rounded-4"  style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
+            <img src="https://api.lunaris.moe/data/assets/avataricon/${characters[id].icon}.webp" class="card-img-top rounded-4"  
+            style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
             <img src="images/${characters[id].element}.png" class="element-icon">
             <div class="my-auto">
                 <div class="card-title text-center fw-bold">${characters[id].name}</div>
@@ -251,13 +299,17 @@ function deactivate(id){
 }
 
 function clearState(){
+    rollCounter = 0;
+    updateRollCounter();
+
     displayTeams();
     displayPicker();
     clearTeam();
     
     enableButton("disableButton");
     enableButton("enableButton");
-    enableButton("randomizeButton");
+    enableButton("randomRollButton");
+    enableButton("settingsButton");
 
     enableContainerClicks("characterContainer");
     disableContainerClicks("teamContainer");
