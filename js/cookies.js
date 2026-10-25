@@ -1,6 +1,15 @@
+addEventListener("beforeunload", (event) => {updateCookies();})
+
 function loadCookies(){
     if(getCookie("save") == ""){
         setCookie("save","",400);
+    }else{
+        
+    }
+    let save = getCookie("save").split("|");
+    
+    for(let i = 0; i < save.length-1; i++){
+        deactivate(save[i]);
     }
 }
 

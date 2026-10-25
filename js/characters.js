@@ -137,7 +137,6 @@ function clearTeam(){
         teamCharacters[i].enabled = true;
     }
     teamCharacters = [];
-    updateCookies();
 }
 
 function enableAll(){
@@ -177,7 +176,7 @@ function addClassRemoveClass(elementId, addedClass, removedClass){
 
 function displayCharacter(container, id){
     container.innerHTML += `
-        <div class="card m-2 rounded-4" onclick="deactivate(this)" id ="${i}">
+        <div class="card m-2 rounded-4" onclick="deactivate(this.id)" id ="${i}">
             <img src="https://api.lunaris.moe/data/assets/avataricon/${characters[id].icon}.webp" class="card-img-top rounded-4"  style="background-color:${characters[id].rank == "QUALITY_ORANGE" ? "#985f2d" : "#6a5d92" };">
             <img src="images/${characters[id].element}.png" class="element-icon">
             <div class="my-auto">
@@ -242,14 +241,13 @@ function deleteSelf(element){
 }
 */
 
-function deactivate(element){
-    characters[element.id].enabled = !characters[element.id].enabled;
-    if(characters[element.id].enabled){
-        addClassRemoveClass(element.id,'enabledCard','disabledCard');
+function deactivate(id){
+    characters[id].enabled = !characters[id].enabled;
+    if(characters[id].enabled){
+        addClassRemoveClass(id,'enabledCard','disabledCard');
     }else{
-        addClassRemoveClass(element.id,'disabledCard','enabledCard');
+        addClassRemoveClass(id,'disabledCard','enabledCard');
     }
-    updateCookies();
 }
 
 function clearState(){
